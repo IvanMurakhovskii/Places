@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity
                 .addApi(Places.GEO_DATA_API)
                 .build();
 
-       //Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
+       Places.PlaceDetectionApi.getCurrentPlace(mGoogleApiClient, null);
     }
 
     @Override
