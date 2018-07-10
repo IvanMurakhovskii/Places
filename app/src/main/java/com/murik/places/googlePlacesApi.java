@@ -8,9 +8,11 @@ import retrofit2.http.Query;
 
 public interface googlePlacesApi {
 
-    @GET("json?location=51.661535,39.200287")
-    Call<PlaceResponse> getPlaces(@Query("radius") int radius,
+    @GET("maps/api/place/nearbysearch/json?")
+    Call<PlaceResponse> getPlaces(@Query("location") String location,
+                                  @Query("radius") int radius,
                                   @Query("type") String typePlace,
                                   @Query("key") String apiPlacesKey);
 
 }
+//location=51.661535,39.200287
