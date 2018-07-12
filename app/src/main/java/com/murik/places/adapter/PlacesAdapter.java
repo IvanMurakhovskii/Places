@@ -1,5 +1,6 @@
 package com.murik.places.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,19 +9,20 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.murik.places.R;
 import com.murik.places.model.Result;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesViewHolder> {
 
-    private List<Result> placeResult = new ArrayList<>();
-    String urlPhoto = "";
+    Context context;
+    private List<Result> placeResult;
+    String photoReference = "";
 
-    public PlacesAdapter(List<Result> results) {
+    public PlacesAdapter(Context context, List<Result> results) {
+        this.context = context;
         placeResult = results;
     }
 
@@ -34,14 +36,16 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.PlacesView
     @Override
     public void onBindViewHolder(PlacesAdapter.PlacesViewHolder holder, int position) {
         holder.bind(placeResult.get(position));
-        if( placeResult.get(position).getPhotos() != null){
-            urlPhoto = placeResult.get(position).getPhotos().get(0).getPhotoReference();
+        if(placeResult.get(position).getPhotos() != null){
+            photoReference = placeResult.get(position).getPhotos().get(0).getPhotoReference();
         }
         //https://farm5.static.flickr.com/4115/5394079747_834307b7a2_b.jpg
-        Picasso.get()
-                .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=150&photoreference="
-                        + urlPhoto + ".jpg" +"&key=AIzaSyAONCkc0SAhx1-QwqAbFFhlih4jt1IKXoE")
-                .into(holder.imgPlace);
+        if(context != null){
+            Glide.with(context)
+                    .load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=150&maxhight=150&photoreference="
+                            + photoReference +"&key=AIzaSyAjZVQoj8mKQDalDGHG8D1JNNSQA_rQKcs")
+                    .into(holder.imgPlace);
+        }
 
     }
 
