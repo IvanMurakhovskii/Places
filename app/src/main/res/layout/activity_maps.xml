@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        android:layout_margin="5dp"
-        android:src="@drawable/googleg_standard_color_18"
+        android:layout_margin="15dp"
+        android:src="@drawable/icons24"
         android:theme="@style/AppTheme"
         app:layout_anchor="@+id/bottom_sheet"
         app:layout_anchorGravity="top|end" />
