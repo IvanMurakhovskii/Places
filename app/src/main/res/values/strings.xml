@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Places</string>
     <string name="title_activity_maps">Map</string>
+    <string name="get_current_place">Get Current place</string>
+    <string name="open_now">Open Now:</string>
+
 </resources>

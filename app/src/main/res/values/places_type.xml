@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="placesType">
+        <item>bar</item>
+        <item>airport</item>
+        <item>hospital</item>
+        <item>bank</item>
+        <item>cafe</item>
+        <item>museum</item>
+        <item>painter</item>
+        <item>police</item>
+        <item>university</item>
+        <item>zoo</item>
+    </array>
+</resources>

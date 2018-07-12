@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,15 +36,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private RecyclerView mRecycler;
+    private TextView tvBottom;
     private FloatingActionButton fab_bottom_sheet;
     BottomSheetBehavior bottomSheetBehavior;
 
     Marker marker;
     Marker markerFindPlace;
     LinearLayout layoutBotoom;
-
-
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private String location = "51.661535,39.200287";
     private String typePlace = "bar";
@@ -54,9 +53,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-
         layoutBotoom =  findViewById(R.id.bottom_sheet);
         fab_bottom_sheet = findViewById(R.id.fab_bottom_sheet);
+        tvBottom = findViewById(R.id.tvBottom);
         fab_bottom_sheet.setOnClickListener(this);
 
         bottomSheetBehavior = BottomSheetBehavior.from(layoutBotoom);
@@ -68,13 +67,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
     }
 
     public void initRecyclerView(PlaceResponse placeResponse) {
         mRecycler = findViewById(R.id.placeRecyclerView);
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        PlacesAdapter recAdapter = new PlacesAdapter(placeResponse.getResults());
+        PlacesAdapter recAdapter = new PlacesAdapter(this, placeResponse.getResults());
         mRecycler.setAdapter(recAdapter);
     }
 
@@ -87,8 +85,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         marker = mMap.addMarker(new MarkerOptions().position(voronezh));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(voronezh));
         mMap.moveCamera(CameraUpdateFactory.zoomTo(13));
-
-
     }
 
     @Override
@@ -102,11 +98,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         markerOptions.title("Current Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         marker = mMap.addMarker(markerOptions);
-        //addInflateFragment();
-
-
     }
 
+    @SuppressLint("CheckResult")
     public void startRetrofit() {
         Call<PlaceResponse> message =
                 RetrofitClient
@@ -115,17 +109,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .create(googlePlacesApi.class).getPlaces(location, 1000, typePlace, RetrofitClient.API_PLACES_KEY);
 
         message.enqueue(new Callback<PlaceResponse>() {
-
             @Override
             public void onResponse(Call<PlaceResponse> call, Response<PlaceResponse> response) {
                 if(!response.body().getResults().isEmpty()){
                     createMarkerPlace(response.body().getResults());
+                    tvBottom.setText(typePlace);
                     initRecyclerView(response.body());
                     bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
                 else {
                     Toast.makeText(getApplicationContext(),  typePlace + " Рядом нет", Toast.LENGTH_SHORT).show();
                 }
+
             }
             @Override
             public void onFailure(Call<PlaceResponse> call, Throwable t) {
@@ -158,35 +153,3 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 }
-
-/*  private void checkLocationPermission () {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                // Should we show an explanation?
-                    new AlertDialog.Builder(this)
-                            .setTitle("Location Permission Needed")
-                            .setMessage("This app needs the Location permission, please accept to use location functionality")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    //Prompt the user once explanation has been shown
-                                    ActivityCompat.requestPermissions(MapsActivity.this,
-                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                            MY_PERMISSIONS_REQUEST_LOCATION);
-                                }
-                            })
-                            .create()
-                            .show();
-
-
-                } else {
-                    // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                            MY_PERMISSIONS_REQUEST_LOCATION);
-                }
-            }
-        }*/
-
-
